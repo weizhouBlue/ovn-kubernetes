@@ -26,9 +26,9 @@ RUN yum install -y  \
 	yum clean all
 
 # copy git commit number into image
-RUN mkdir -p go-controller /root/.git/ /root/.git/refs/heads/
-COPY .git/HEAD /root/.git/HEAD
-COPY .git/refs/heads/ /root/.git/refs/heads/
+#RUN mkdir -p go-controller /root/.git/ /root/.git/refs/heads/
+#COPY .git/HEAD /root/.git/HEAD
+#COPY .git/refs/heads/ /root/.git/refs/heads/
 
 # build the binaries
 COPY go-controller/ go-controller/
