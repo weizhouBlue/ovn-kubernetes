@@ -433,7 +433,7 @@ create_ovnkube_db_ep () {
 
   # create a new endpoint for the headless onvkube-db service without selectors
   # using the current host has the endpoint IP
-  ovn_db_host=$(getent ahosts $(hostname) | head -1 | awk '{ print $1 }')
+  ovn_db_host=$(getent ahostsv4 $(hostname) | head -1 | awk '{ print $1 }')
   kubectl --server=${K8S_APISERVER} --token=${k8s_token} --certificate-authority=${K8S_CACERT} create -f - << EOF
 apiVersion: v1
 kind: Endpoints
