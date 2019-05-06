@@ -35,7 +35,7 @@ RUN mkdir -p go-controller /root/.git/ /root/.git/refs/heads/
 
 
 RUN wget http://dao-get.daocloud.io/kubernetes-release/release/$KUBE_VERSION/bin/linux/amd64/kubectl  && \
-    chmod 777 ./kubectl &&
+    chmod 777 ./kubectl && \
     cp ./kubectl /usr/bin/
 
 # build the binaries
