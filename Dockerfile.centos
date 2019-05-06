@@ -33,8 +33,8 @@ RUN mkdir -p go-controller /root/.git/ /root/.git/refs/heads/
 #COPY .git/HEAD /root/.git/HEAD
 #COPY .git/refs/heads/ /root/.git/refs/heads/
 
-
-RUN wget http://dao-get.daocloud.io/kubernetes-release/release/$KUBE_VERSION/bin/linux/amd64/kubectl  && \
+COPY ./k8s-tool/kubectl /
+RUN ( wget http://dao-get.daocloud.io/kubernetes-release/release/$KUBE_VERSION/bin/linux/amd64/kubectl  || mv /kubectl ./ ) && \
     chmod 777 ./kubectl && \
     cp ./kubectl /usr/bin/
 
