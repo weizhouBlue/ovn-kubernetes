@@ -22,12 +22,8 @@ ENV PYTHONDONTWRITEBYTECODE yes
 
 # install golang and build tools
 RUN yum install -y  \
-	make which  gcc && \
+	make which  gcc wget && \
 	yum clean all
-
-
-RUN yum install -y wget && wget https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz && mkdir /go && tar zxvf go1.12.4.linux-amd64.tar.gz -C /go && rm go1.12.4.linux-amd64.tar.gz -f
-ENV PATH /go/go/bin:$PATH
 
 
 # copy git commit number into image
@@ -35,17 +31,24 @@ RUN mkdir -p go-controller /root/.git/ /root/.git/refs/heads/
 #COPY .git/HEAD /root/.git/HEAD
 #COPY .git/refs/heads/ /root/.git/refs/heads/
 
+
 # build the binaries
 COPY go-controller/ go-controller/
-RUN cd go-controller && make
+
+
+ENV PATH /go/go/bin:$PATH
+RUN wget https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz && \
+     mkdir /go && tar zxvf go1.12.4.linux-amd64.tar.gz -C /go && \
+     cd go-controller && make   && \
+     rm go1.12.4.linux-amd64.tar.gz -f && rm /go -rf
 
 # remove build tools
 RUN yum remove -y  \
-	gmake which golang gcc \
+	gmake which golang gcc wget \
 	cpp gcc glibc-devel glibc-headers golang-bin \
 	golang-src.noarch kernel-headers \
 	libgomp libmpc mpfr && \
-	yum clean all
+	yum clean all 
 
 # install needed rpms
 RUN yum install -y  \
@@ -56,7 +59,7 @@ RUN yum install -y  \
 	libpcap \
 	hostname \
 	iproute strace socat && \
-	yum clean all && rm -rf /go/go
+	yum clean all 
 
 # Get a reasonable version of openvswitch (2.9.2 or higher)
 # docker build --build-arg rpmArch=ARCH -f Dockerfile.centos -t some_tag .
