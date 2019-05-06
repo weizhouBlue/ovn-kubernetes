@@ -19,7 +19,6 @@ FROM centos:7
 USER root
 
 ENV PYTHONDONTWRITEBYTECODE yes
-ENV KUBE_VERSION v1.14.0
 
 
 # install golang and build tools
@@ -33,11 +32,15 @@ RUN mkdir -p go-controller /root/.git/ /root/.git/refs/heads/
 #COPY .git/HEAD /root/.git/HEAD
 #COPY .git/refs/heads/ /root/.git/refs/heads/
 
-COPY ./k8s-tool/kubectl /
-RUN ( wget http://dao-get.daocloud.io/kubernetes-release/release/$KUBE_VERSION/bin/linux/amd64/kubectl  || mv /kubectl ./ ) && \
-    chmod 777 ./kubectl && \
-    cp ./kubectl /usr/bin/
+#ENV KUBE_VERSION v1.14.0
+#RUN ( wget http://dao-get.daocloud.io/kubernetes-release/release/$KUBE_VERSION/bin/linux/amd64/kubectl  || mv /kubectl ./ ) && \
+#    chmod 777 ./kubectl && \
+#    mv ./kubectl /usr/bin/
 
+COPY ./k8s-tool/kubectl /
+RUN  chmod 777 /kubectl &&  mv /kubectl /usr/bin/
+    
+    
 # build the binaries
 COPY go-controller/ go-controller/
 
