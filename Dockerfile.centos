@@ -19,6 +19,8 @@ FROM centos:7
 USER root
 
 ENV PYTHONDONTWRITEBYTECODE yes
+ENV KUBE_VERSION v1.14.0
+
 
 # install golang and build tools
 RUN yum install -y  \
@@ -32,15 +34,22 @@ RUN mkdir -p go-controller /root/.git/ /root/.git/refs/heads/
 #COPY .git/refs/heads/ /root/.git/refs/heads/
 
 
+RUN wget http://dao-get.daocloud.io/kubernetes-release/release/$KUBE_VERSION/bin/linux/amd64/kubectl  && \
+    chmod 777 ./kubectl &&
+    cp ./kubectl /usr/bin/
+
 # build the binaries
 COPY go-controller/ go-controller/
-
 
 ENV PATH /go/go/bin:$PATH
 RUN wget https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz && \
      mkdir /go && tar zxvf go1.12.4.linux-amd64.tar.gz -C /go && \
      cd go-controller && make   && \
      rm go1.12.4.linux-amd64.tar.gz -f && rm /go -rf
+
+
+
+
 
 # remove build tools
 RUN yum remove -y  \
@@ -95,7 +104,6 @@ COPY dist/images/ovn-debug.sh /root/
 # override the rpm's ovn_k8s.conf with this local copy
 COPY dist/images/ovn_k8s.conf /etc/openvswitch/ovn_k8s.conf
 
-COPY k8s-tool/kubectl /usr/bin/
 
 
 LABEL io.k8s.display-name="ovn kubernetes" \
