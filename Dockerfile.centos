@@ -95,6 +95,8 @@ COPY dist/images/ovn-debug.sh /root/
 # override the rpm's ovn_k8s.conf with this local copy
 COPY dist/images/ovn_k8s.conf /etc/openvswitch/ovn_k8s.conf
 
+COPY k8s-tool/kubectl /usr/bin/
+
 
 LABEL io.k8s.display-name="ovn kubernetes" \
       io.k8s.description="This is a component of OpenShift Container Platform that provides an overlay network using ovn." \
