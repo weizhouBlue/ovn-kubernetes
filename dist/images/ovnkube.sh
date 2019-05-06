@@ -279,7 +279,7 @@ display () {
 
 setup_cni () {
   # Take over network functions on the node
-  # rm -f /etc/cni/net.d/*
+  rm -f /etc/cni/net.d/*
   cp -f /usr/libexec/cni/ovn-k8s-cni-overlay /host/opt/cni/bin/ovn-k8s-cni-overlay
   if [[ ! -f /host/opt/cni/bin/loopback ]]
   then
@@ -669,6 +669,11 @@ ovn-node () {
   wait_for_event ovs_ready
 
   echo "=============== ovn-node - (wait for ready_to_start_node)"
+  #ovnkube-db and master may be not created right now because no any CNI is installed and all node is not ready
+  #touch a fake CNI conf
+  cat  > /etc/cni/net.d/10-ovn-kubernetes.conf << END
+{"cniVersion":"0.3.1","name":"ovn-kubernetes","type":"ovn-k8s-cni-overlay","ipam":{},"dns":{}}
+END  
   wait_for_event ready_to_start_node
 
   echo "ovn_nbdb ${ovn_nbdb}   ovn_sbdb ${ovn_sbdb}  ovn_nbdb_test ${ovn_nbdb_test}"
