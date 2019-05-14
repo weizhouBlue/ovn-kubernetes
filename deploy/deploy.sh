@@ -1,7 +1,8 @@
 #set -x
 
 KUBE_VERSION="v1.14.0"
-which kubectl &> /dev/null && echo "downloading kubectl" && curl -L http://dao-get.daocloud.io/kubernetes-release/release/$KUBE_VERSION/bin/linux/amd64/kubectl > /usr/sbin/kubectl && chmod 777 /usr/sbin/kubectl
+which kubectl &> /dev/null 
+[ ! "$?" -eq 0 ] && echo "downloading kubectl" && curl -L http://dao-get.daocloud.io/kubernetes-release/release/$KUBE_VERSION/bin/linux/amd64/kubectl > /usr/sbin/kubectl && chmod 777 /usr/sbin/kubectl
 
 deploy_file="ovn-setup.yaml ovnkube-db.yaml ovnkube-master.yaml ovnkube-node.yaml"
 OUTPUT_DIR="./output"
